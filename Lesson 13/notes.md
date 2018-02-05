@@ -7,6 +7,7 @@
 -speed searching
 
 =============
+
 **non clustered**
 -fast
 -249 per table
