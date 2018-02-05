@@ -1,19 +1,19 @@
 **clustered**
--fastest
--1 er table
--use on PK
+- fastest
+- 1 per table
+- use on PK
 
 *indexes +*
--speed searching
+- speed searching
 
 =============
 
 **non clustered**
--fast
--249 per table
--use on fk
+- fast
+- 249 per table
+- use on fk
 
 *indexes - *
--slows data 
+- slows data 
 
 
