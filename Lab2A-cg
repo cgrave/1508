@@ -18,7 +18,8 @@ LastName varchar(30) not null,
 FirstName varchar(30) not null,
 Address varchar(40) null,
 City varchar(30) null,
-Province char(2) null,
+Province char(2) null
+	constraint DF_Province default 'AB',
 PostalCode char(6) null,
 HomePhone char(10) null
 )
@@ -54,8 +55,11 @@ create table Title
 ISBN char(10) not null
 	constraint PK_Title primary key clustered,
 Title varchar(40) null,
-SuggestedPrice smallmoney null,
-NumberInStock smallint null,
+SuggestedPrice smallmoney null
+	constraint DF_SuggestedPrice default 0,
+NumberInStock smallint null
+	constraint DF_NumberInStock default 0
+	constraint CK_NumberInStock check(NumberInStock>=0),
 PublisherCode int null
 	constraint FK_TitletoPublisher references Publisher(PublisherCode),
 CategoryCode int null
@@ -83,7 +87,8 @@ LastName varchar(30) not null,
 FirstName varchar(30) not null,
 Address varchar(40) null,
 City varchar(30) null,
-Province char(2) null,
+Province char(2) null
+	constraint DF_ProvinceEmployee default 'AB',
 PostalCode char(6) null,
 HomePhone char(10) null,
 WorkPhone char(10) null,
@@ -116,9 +121,11 @@ constraint PK_AuthorTitle primary key clustered (ISBN,AuthorCode)
 SELECT * from Customer
 SELECT * from Sale
 SELECT * from SaleDetail
+
 SELECT * from Employee
 SELECT * from AuthorTitle
 SELECT * from Title
 SELECT * from Author
+
 SELECT * from Category
 SELECT * from Publisher
