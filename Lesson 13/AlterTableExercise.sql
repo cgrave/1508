@@ -53,20 +53,35 @@ create table Activity
 		constraint FK_ActivityToClub references Club(ClubId),
 	constraint PK_Activity primary key clustered (StudentId,ClubId)
 )
---DONE•	Add a MeetingLocation varchar(50) field to the Club table
---•	Add a constraint to birthdate to ensure the value is < todays date
---•	Add a constraint to set a default of 80 to the Hours field
---•	Oops, changed our minds…. DISABLE the check constraint for the birthdate field
---•	Yikes! Change our minds again. ENABLE the check constraint for the Birthdate field
---•	Hold on! Call me crazy…. Delete the default constraint for the Hours field now!
+--DONEâ€¢	Add a MeetingLocation varchar(50) field to the Club table
+--â€¢	Add a constraint to birthdate to ensure the value is < todays date
+--â€¢	Add a constraint to set a default of 80 to the Hours field
+--â€¢	Oops, changed our mindsâ€¦. DISABLE the check constraint for the birthdate field
+--â€¢	Yikes! Change our minds again. ENABLE the check constraint for the Birthdate field
+--â€¢	Hold on! Call me crazyâ€¦. Delete the default constraint for the Hours field now!
 
+--this works
 ALTER TABLE Club ADD MeetingLocation varchar(50)
 
+--this works
 ALTER TABLE Student ADD Constraint CK_ValidBirthDate check (Birthdate < getdate())
 
+--this works
+ALTER TABLE Course ADD Constraint DF_ValidHours default (80) for hours
 
-insert into Student (Birthdate, studentid, StudentFirstName, StudentLastName, GenderCode)
-values('jan 6 2019', 123, 'Bob', 'Dylan', 'f')
+--this works
+ALTER TABLE Student nocheck constraint CK_ValidBirthDate
 
+--this works
+ALTER TABLE Student check constraint CK_ValidBirthDate
 
-SELECT * FROM Student
+--this works
+ALTER TABLE Course drop constraint DF_ValidHours
+
+INSERT into Student (birthdate, studentid, StudentFirstName, StudentLastName, GenderCode)
+values('jan 08 2000', 5838, 'Bob', 'Dylan', 'f')
+
+insert into Course(Courseid, CourseName)
+values(325, 'nameme')
+
+SELECT * FROM course
