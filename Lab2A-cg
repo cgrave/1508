@@ -1,85 +1,118 @@
+--Drop tables
+drop table AuthorTitle
+drop table Author
+drop table SaleDetail
+drop table Title
+drop table Publisher
+drop table Category
+drop table Sale
+drop table Customer
+drop table Employee
+
+--Create Tables
 create table Customer
 (
-CustomerNumber int not null,
-LastName varchar(30),
-FirstName varchar(30),
-Address varchar(40),
-City varchar(30),
-Province char(2),
-PostalCode char(6),
-HomePhone char(10)
+CustomerNumber int not null
+	constraint PK_Customer primary key clustered,
+LastName varchar(30) not null,
+FirstName varchar(30) not null,
+Address varchar(40) null,
+City varchar(30) null,
+Province char(2) null,
+PostalCode char(6) null,
+HomePhone char(10) null
 )
 
 create table Sale
 (
-SaleNumber int not null,
-SaleDate datetime,
-CustomerNumber int,
-EmployeeNumber int,
-Subtotal money,
-GST money,
-Total money
-)
-
-create table SaleDetail
-(
-SaleNumber int not null,
-ISBN char(10) not null,
-SellingPrice money,
-Quantity int,
-Amount money
-)
-
-create table Employee
-(
-EmployeeNumber int not null,
-SIN char(9),
-LastName varchar(30),
-FirstName varchar(30),
-Address varchar(40),
-City varchar(30),
-Province char(2),
-PostalCode char(6),
-HomePhone char(10),
-WorkPhone char(10),
-Email varchar(40)
-)
-
-create table AuthorTitle
-(
-ISBN char(10) not null,
-AuthorCode int not null
-)
-
-create table Title
-(
-ISBN char(10) not null,
-Title varchar(40),
-SuggestedPrice smallmoney,
-NumberInStock smallint,
-PublisherCode int,
-CategoryCode int
-)
-
-create table Author
-(
-AuthorCode int not null,
-LastName varchar(30),
-FirstName varchar(30)
+SaleNumber int not null
+	constraint PK_Sale primary key clustered,
+SaleDate datetime null,
+CustomerNumber int null,
+EmployeeNumber int null,
+Subtotal money null,
+GST money null,
+Total money null
 )
 
 create table Category
 (
-CategoryCode int not null,
+CategoryCode int not null
+	constraint PK_Category primary key clustered,
 Description varchar(40)
 )
 
 create table Publisher
 (
-PublisherCode int not null,
-Name varchar(40)
+PublisherCode int not null
+	constraint PK_Publisher primary key clustered,
+Name varchar(40) null
 )
 
+create table Title
+(
+ISBN char(10) not null
+	constraint PK_Title primary key clustered,
+Title varchar(40) null,
+SuggestedPrice smallmoney null,
+NumberInStock smallint null,
+PublisherCode int null
+	constraint FK_TitletoPublisher references Publisher(PublisherCode),
+CategoryCode int null
+	constraint FK_TitletoCategory references Category(CategoryCode)
+)
+
+create table SaleDetail
+(
+SaleNumber int not null
+	constraint FK_SaleDetailtoSale references Sale(SaleNumber),
+ISBN char(10) not null
+	constraint FK_SaleDetailtoTitle references Title(ISBN),
+SellingPrice money null,
+Quantity int null,
+Amount money null,
+constraint PK_SaleDetail primary key clustered (Salenumber,ISBN)
+)
+
+create table Employee
+(
+EmployeeNumber int not null
+	constraint PK_Employee primary key clustered,
+SIN char(9) not null,
+LastName varchar(30) not null,
+FirstName varchar(30) not null,
+Address varchar(40) null,
+City varchar(30) null,
+Province char(2) null,
+PostalCode char(6) null,
+HomePhone char(10) null,
+WorkPhone char(10) null,
+Email varchar(40) null
+)
+
+create table Author
+(
+AuthorCode int not null
+	constraint PK_Author primary key clustered,
+LastName varchar(30) null,
+FirstName varchar(30) null
+)
+
+create table AuthorTitle
+(
+ISBN char(10) not null
+	constraint FK_AuthorTitletoTitle references Title(ISBN),
+AuthorCode int not null
+	constraint FK_AuthorTitletoAuthor references Author(AuthorCode),
+constraint PK_AuthorTitle primary key clustered (ISBN,AuthorCode)
+)
+
+
+
+
+
+
+-- View Tables
 SELECT * from Customer
 SELECT * from Sale
 SELECT * from SaleDetail
