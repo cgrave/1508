@@ -87,6 +87,19 @@ check constraint CK_ValidBirthDate
 ALTER TABLE Course
 Drop constraint DF_ValidHours
 
+--forgot to add this
+Create nonclustered index ix_StudentID
+on Grade(StudentID)
+
+Create nonclustered index ix_courseID
+on Grade(CourseID)
+
+Create nonclustered index ix_Activity_StudentID
+on Activity(StudentID)
+
+Create nonclustered index ix_Activity_ClubID
+on Activity(ClubID)
+--index
 INSERT into Student (birthdate, studentid, StudentFirstName, StudentLastName, GenderCode)
 values('jan 08 2000', 5838, 'Bob', 'Dylan', 'f')
 
