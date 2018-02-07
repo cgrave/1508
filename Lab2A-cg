@@ -1,0 +1,91 @@
+create table Customer
+(
+CustomerNumber int not null,
+LastName varchar(30),
+FirstName varchar(30),
+Address varchar(40),
+City varchar(30),
+Province char(2),
+PostalCode char(6),
+HomePhone char(10)
+)
+
+create table Sale
+(
+SaleNumber int not null,
+SaleDate datetime,
+CustomerNumber int,
+EmployeeNumber int,
+Subtotal money,
+GST money,
+Total money
+)
+
+create table SaleDetail
+(
+SaleNumber int not null,
+ISBN char(10) not null,
+SellingPrice money,
+Quantity int,
+Amount money
+)
+
+create table Employee
+(
+EmployeeNumber int not null,
+SIN char(9),
+LastName varchar(30),
+FirstName varchar(30),
+Address varchar(40),
+City varchar(30),
+Province char(2),
+PostalCode char(6),
+HomePhone char(10),
+WorkPhone char(10),
+Email varchar(40)
+)
+
+create table AuthorTitle
+(
+ISBN char(10) not null,
+AuthorCode int not null
+)
+
+create table Title
+(
+ISBN char(10) not null,
+Title varchar(40),
+SuggestedPrice smallmoney,
+NumberInStock smallint,
+PublisherCode int,
+CategoryCode int
+)
+
+create table Author
+(
+AuthorCode int not null,
+LastName varchar(30),
+FirstName varchar(30)
+)
+
+create table Category
+(
+CategoryCode int not null,
+Description varchar(40)
+)
+
+create table Publisher
+(
+PublisherCode int not null,
+Name varchar(40)
+)
+
+SELECT * from Customer
+SELECT * from Sale
+SELECT * from SaleDetail
+SELECT * from Employee
+SELECT * from AuthorTitle
+SELECT * from Title
+SELECT * from Author
+SELECT * from Category
+SELECT * from Publisher
