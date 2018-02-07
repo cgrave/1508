@@ -20,7 +20,8 @@ Address varchar(40) null,
 City varchar(30) null,
 Province char(2) null
 	constraint DF_Province default 'AB',
-PostalCode char(6) null,
+PostalCode char(6) null 
+	constraint CK_CustomerPostalCode check(PostalCode like '[A-Z][0-9][A-Z] [0-9][A-Z][0-9]'),
 HomePhone char(10) null
 )
 
@@ -31,9 +32,10 @@ SaleNumber int not null
 SaleDate datetime null,
 CustomerNumber int null,
 EmployeeNumber int null,
+Total money null,
 Subtotal money null,
 GST money null,
-Total money null
+constraint CK_SubTotaladnTotal check(Total >= Subtotal),
 )
 
 create table Category
@@ -89,7 +91,8 @@ Address varchar(40) null,
 City varchar(30) null,
 Province char(2) null
 	constraint DF_ProvinceEmployee default 'AB',
-PostalCode char(6) null,
+PostalCode char(6) null
+	constraint CK_EmployeePostalCode check(PostalCode like '[A-Z][0-9][A-Z] [0-9][A-Z][0-9]'),
 HomePhone char(10) null,
 WorkPhone char(10) null,
 Email varchar(40) null
