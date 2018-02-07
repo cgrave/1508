@@ -61,22 +61,31 @@ create table Activity
 --•	Hold on! Call me crazy…. Delete the default constraint for the Hours field now!
 
 --this works
-ALTER TABLE Club ADD MeetingLocation varchar(50)
+ALTER TABLE Club 
+Add
+MeetingLocation varchar(50) null
 
 --this works
-ALTER TABLE Student ADD Constraint CK_ValidBirthDate check (Birthdate < getdate())
+ALTER TABLE Student
+Add
+Constraint CK_ValidBirthDate check (Birthdate < getdate())
 
 --this works
-ALTER TABLE Course ADD Constraint DF_ValidHours default (80) for hours
+ALTER TABLE Course
+Add
+Constraint DF_ValidHours default (80) for hours
 
 --this works
-ALTER TABLE Student nocheck constraint CK_ValidBirthDate
+ALTER TABLE Student
+nocheck constraint CK_ValidBirthDate
 
 --this works
-ALTER TABLE Student check constraint CK_ValidBirthDate
+ALTER TABLE Student
+check constraint CK_ValidBirthDate
 
 --this works
-ALTER TABLE Course drop constraint DF_ValidHours
+ALTER TABLE Course
+Drop constraint DF_ValidHours
 
 INSERT into Student (birthdate, studentid, StudentFirstName, StudentLastName, GenderCode)
 values('jan 08 2000', 5838, 'Bob', 'Dylan', 'f')
