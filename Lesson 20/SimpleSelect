@@ -1,0 +1,35 @@
+-- Select certain columns
+Select firstname,lastname from staff
+--ctrl + shift + R = intellisense refresh
+-- select all the columns in the satff table
+Select * from staff
+-- NEVER USE * ALWAYS use a column list.. DONT MAKE THIS MISTAKE IN LABS
+select firstname, lastname, datehired, datereleased from staff
+-- Custome column names(aliases)
+Select 'StaffFIrstname' = firstname, 'StaffLastName' = lastname from staff
+--renamed from that point forward until use another select
+Select firstname as 'StaffFirstName', lastname as 'StaffLastName' from staff
+Select firstname 'StaffFirstName', lastname 'StaffLastName' from staff
+--above three different ways to do same thing. DO NOT put spaces in your names
+-- custom columns
+Select firstname + ' ' + lastname from staff -- no column name
+-- All Columns must have a name, do not hand in anything without name for marks, bad idea
+Select firstname + ' ' + lastname 'StaffName' from staff -- adds column name
+
+-- Math
+Select coursecost 'RegularCost', coursecost *.8 'SaleCost' from course
+-- if everyone registered to fill a course, how much is made from each course? show the courseid and $
+Select courseid, CourseCost * maxstudents 'COurseCost' from course
+
+-- WHERE clause - determines which records are returned
+Select paymentid, paymentdate, amount from payment
+where amount >600
+-- Dont need to select the columns that is in the where clause
+--Select the Students full names whose last name starts with S
+Select firstname + ' ' + lastname 'FullName' from student where LastName like 'S%'
+--first name of student with these student ids (198933540, 199912010, 200688700)
+Select firstname, lastname from student where studentid in (198933540, 199912010, 200688700)
+-- DO not put quotes around numeric datatypes
+
+--students firstname that start with a b c d
+Select firstname from student where firstname like '[A-D]%'
