@@ -1,9 +1,9 @@
 --String and Date Functions Exercise
 --1. Select the staff names and the name of the month they were hired
-
+Select firstname + ', ' + LastName'FullNames', datehired, datename(mm,datehired)'month' from staff order by month(datehired)
 
 --2. How many days did Tess Agonor work for the school?
-
+Select firstname + ', ' + LastName'FullNames', datediff(dd, datehired, getdate())'hired' from staff where 
 
 --3. How Many Students where born in each month? Display the Month Name and the Number of Students.
 
