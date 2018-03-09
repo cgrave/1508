@@ -48,5 +48,15 @@ group by student.studentid, firstname, lastname
 select student.studentid, firstname, lastname, paymentid,paymentdate from student
 left outer join payment on student.StudentID = payment.StudentID
 
+Select firstname, lastname, count(paymentid)'count' from student
+left outer join payment on student.studentid = payment.StudentID
+group by student.studentid, firstname, lastname
 
+--ALWAYS COUNT EH PK FIELD OF TEH CHILD TABLE WHEN DOING A COUNT WITH AN OUTER JOIN.OTHERWISE YOU WILL GET A COUNT OF 1 INSTEAD OF COUNT 0 FOR PARENT RECORDS THAT HAVE NO CHILD RECORDS
 
+--GROUP BY UNIQUE ATTRIBUTE
+--POINT TO WHAT WE WANT TO KEEP
+--COUNT (PK OF CHILD) WHAT OUTER JOIN
+--HOW MANY IS EACH STUDENT TAKING > THAT IS EACH AND EVERY STUDENT / OR ALL > OUTER
+
+--OUTER JOIN EXERCISE
