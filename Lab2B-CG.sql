@@ -28,8 +28,9 @@ Select ISBN, title, suggestedprice from title
 
 --10.	Lets have some random fun! Select the Customer Names that have shaw.ca email addresses and have made more than 3 sales. (3 marks)
 
---11.	Employees who have the highest individual sale each month are recognized with a $5.00 Tim Hortons card! Select the name of the Employee and the email address for the employee that has the highest individual sale for the current month. This query will be run on the last day of each month to determine the winner for that month. You must use a subquery in your solution. (5 marks)
+--11.	Employees who have the highest INDIVIDUAL(not total) sale each month are recognized with a $5.00 Tim Hortons card! Select the name of the Employee and the email address for the employee that has the highest individual sale for the current month. This query will be run on the last day of each month to determine the winner for that month. You must use a subquery in your solution. (5 marks)
 --not greater than or equal type question
+--this month and YEAR
 
 --12.	BONUS QUESTION! Must get the question completely correct or no bonus marks ☹.
 --Who are our best customers? Select ALL the customer full names (as one column),a count of books they have purchased and the number of sales they have. Order the list alphabeticaly by Customer Last Name. (2 marks)
