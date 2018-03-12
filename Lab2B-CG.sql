@@ -6,12 +6,12 @@ Select isbn, title, publisher.name, NumberInStock from title
 inner join publisher on Publisher.publishercode = title.publishercode
 
 --2.	The company is having a 10% sale on books in the category “Computers”.  Select the ISBN, title, suggested price, the sale price (suggested price less 10%) and the difference between the two values. (2 marks) 
-Select ISBN, title, suggestedprice from title
+Select ISBN, title, suggestedprice,(SuggestedPrice*0.10)'PriceDifference', SuggestedPrice-(SuggestedPrice*0.10)'SalePrice' from title 
 
 --3.	Select the employee number and name of all the employees who don’t have a sale. Do not use a join. (2 marks)
 --subquery
 
---4.	Select the total number of books and the total money earned for the company for the current year. 
+--4.	Select the total number of books sold and the total money earned for the company for the current year. 
 --(3 marks)
 
 --5.	Select the category code, category description and the total number of books sold and the total money earned for each and every category.  (4 marks)
