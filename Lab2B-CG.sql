@@ -30,3 +30,4 @@
 
 
 --subquery for end of lab assignment
+--    look at where grade > ALL (select grade...)
