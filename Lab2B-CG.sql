@@ -27,3 +27,6 @@
 
 --12.	BONUS QUESTION! Must get the question completely correct or no bonus marks ☹.
 --Who are our best customers? Select ALL the customer full names (as one column),a count of books they have purchased and the number of sales they have. Order the list alphabeticaly by Customer Last Name. (2 marks)
+
+
+--subquery for end of lab assignment
