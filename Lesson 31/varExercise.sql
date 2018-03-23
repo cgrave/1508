@@ -1,7 +1,34 @@
 --1.	Create a stored procedure called StudentClubCount. It will accept a clubID as a parameter. If the count of students in that club is greater than 2 print ‘A successful club!’ . If the count is not greater than 2 print ‘Needs more members!’.
 
+create procedure StudentClubCount(@clubid varchar(10))
+as
+	if @clubid is null
+		begin
+			print('enter something pls')
+		end
+	else
+		begin
+			if exists (select @clubid from Activity where studentid > 2)
+			begin
+				print('Need More members!')
+			end
+			else
+			begin
+				print('successful club!')
+			end
+		end
+	return
+
+exec StudentClubCount CSS
+
+select * from activity
+
 --2.	Create a stored procedure called BalanceOrNoBalance. It will accept a studentID as a parameter. Each course has a cost. If the total of the costs for the courses the student is registered in is more than the total of the payments that student has made then print ‘balance owing !’ otherwise print ‘Paid in full! Welcome to School 158!’
 --Do Not use the BalanceOwing field in your solution. 
+go
+create procedure BalanceOrNoBalance(@studentid  int)
+as
+
 
 --3.	Create a stored procedure called ‘DoubleOrNothin’. It will accept a students first name and last name as parameters. If the student name already is in the table then print ‘We already have a student with the name firstname lastname!’ Other wise print ‘Welcome firstname lastname!’
 
