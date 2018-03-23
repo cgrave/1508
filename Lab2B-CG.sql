@@ -49,7 +49,7 @@ where employeeNumber not in (select employeeNumber from sale)
 --(3 marks) =====done====
 select SUM(quantity)'booksold',  SUM(sellingprice)'moneyearned' from saledetail
 inner join sale on sale.salenumber = saledetail.salenumber
-where year(saledate) = 2018
+where year(saledate) = 2018 --dont hardcode
 
 --5.	Select the category code, category description and the total number of books sold and the total money earned for each and every category.  (4 marks) =============done================ what is difference between sellingprice and amount?
 select title.categorycode, description ,count(description)'totalBooksSold', sum(amount)'total'from category
@@ -61,7 +61,7 @@ group by title.categorycode, description
 select saledetail.isbn, title, amount from title
 inner join saledetail on saledetail.isbn = title.isbn
 inner join sale on sale.salenumber = saledetail.salenumber
-where year(saledate) = 2018 and amount > 100
+where year(saledate) = 2018 and amount > 100 --having amount AND Hardcoding messed up
 
 
 --7.	Write the select statement to return ALL the customer names, CustomerNumbers and how many sales they have. (3 marks) =================done============
@@ -89,6 +89,8 @@ select firstname + ' ' + lastname'names', email,  sale.customerNumber, count(sal
 inner join customer on customer.CustomerNumber = sale.customerNumber
 group by firstname, lastname,email, sale.customerNumber
 having count(salenumber) >= 3
+--emails pls
+--outjoin COUNT(columnname) otherwise -innerjoin COUNT(*)
 
 
 --11.	Employees who have the highest INDIVIDUAL(not total) sale each month are recognized with a $5.00 Tim Hortons card! Select the name of the Employee and the email address for the employee that has the highest individual sale for the current month. This query will be run on the last day of each month to determine the winner for that month. You must use a subquery in your solution. (5 marks)=======================done===================
