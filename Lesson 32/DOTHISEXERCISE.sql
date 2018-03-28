@@ -36,9 +36,43 @@ as
 		end
 return
 
---3.	Create a stored procedure called ‘Updateclub’ to update a club record. Do not update the primary key!
+--3.	Create a stored procedure called ‘Updateclub’ to update a club record. Do not update the primary key! --so basically dont change the id
+go
+create procedure UpdateClub(@clubid varchar(10) = null, @Clubname varchar(50) = null)
+as
+	if @clubid is null
+		begin
+		raiserror('cannot be null club id',16,1)
+		end
+	else
+		begin
+		update club
+		set clubname = @Clubname
+		where clubid = @clubid
+		if @@ERROR <>0
+			begin
+			raiserror('failed update',16,1)
+			end
+		end
+	
+return
 
 --4.	Create a stored procedure called ‘ClubMaintenance’. It will accept parameters for both ClubID and ClubName as well as a parameter to indicate if it is an insert, update or delete. This parameter will be ‘I’, ‘U’ or ‘D’.  insert, update, or delete a record accordingly. Focus on making your code as efficient and maintainable as possible.
+go
+create procedure ClubMaintenance(@clubid varchar(10), @clubname varchar(50), @charSelect varchar(1))
+as
+	if @clubid = null or @clubname is null
+		begin
+		raiserror('ENTER BOTH PLS',16,1)
+		end
+	else
+		begin
+			if @charselect = 'I'
+				begin
+					Insert into Club (ClubId,ClubName)
+					values (@ClubID,@Clubname)
+				end
+return
 
 --5.	 Create a stored procedure called ‘RegisterStudent’ that accepts StudentID and OfferingCode as parameters. If the number of students in that Offering are not greater than the Max Students for that course, add a record to the Registration table and add the cost of the course to the students balance. If the registration would cause the Offering to have greater than the MaxStudents   raise an error. 
 
