@@ -1,10 +1,40 @@
 --Stored Procedures – DML exercise
 --For this exercise you will need a local copy of the IQSchool database. 
 --1.	Create a stored procedure called ‘AddClub’ to add a new club record.
-create stored procedure AddClub(@clubid varchar(10) = null, @Clubname varchar(50) = null)
-
+create procedure AddClub(@clubid varchar(10) = null, @Clubname varchar(50) = null)
+as
+	if @Clubname is null or @clubid is null
+		begin
+		raiserror('no',16,1)
+		end
+	else
+		begin
+		insert into Club(clubid,clubname)
+		values(@clubid, @Clubname)
+		if @@ERROR <>0
+			begin
+			raiserror('no thanks man',16,1)
+		end
+	end
+return
 
 --2.	Create a stored procedure called ‘DeleteClub’ to delete a club record.
+go
+create procedure DeletClub(@clubid varchar(10) = null)
+as
+	if @clubid is null
+		begin
+		raiserror('cannot be null',16,1)
+		end
+	else
+		begin
+		delete club where clubid = @clubid
+			if @@ERROR <>0
+				begin
+				raiserror('didnt delete', 16,1)
+				end
+		end
+return
 
 --3.	Create a stored procedure called ‘Updateclub’ to update a club record. Do not update the primary key!
 
