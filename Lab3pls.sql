@@ -1,10 +1,70 @@
 -- Lab 3 Crystal Grave
---1.	Write a procedure BooksbyAuthorName that will find and display all books by a certain author. The procedure accepts author last name and first name as parameters. Display the ISBN, title, publisher name and suggested price of all books by that author.  List in ascending title sequence. (3 marks)
--- create procedure BooksbyAuthorName  (@authorFirstname varchar(30)  )
+--1.	Write a procedure BooksbyAuthorName that will find and display all books by a certain author. The procedure accepts author last name and first name as parameters. 
+--Display the ISBN, title, publisher name and suggested price of all books by that author.  List in ascending title sequence. (3 marks)
+create procedure BooksbyAuthorName  (@authorFirstname varchar(30), @authorLastname varchar(30))
+as
+if @authorFirstname is null
+	begin
+		raiserror('Pls Enter first name',16,1)
+	end
+if @authorLastname is null
+	begin
+		raiserror('Pls Enter last name',16,1)
+	end
+else
+	begin
+		select title.isbn, title, Publisher.name, SuggestedPrice from title
+		
+		--inner join authortitle on author.authorcode = authortitle.authorcode
+		inner join authortitle on title.isbn = authortitle.isbn
+		inner join author on author.authorcode = authortitle.authorcode
+		inner join publisher on publisher.PublisherCode = title.PublisherCode
+		where @authorFirstname = firstname and @authorLastname = lastname
+		--where author.FirstName = 'Sam' and lastname = 'smith'
+		order by title asc
+		--select * from author
+	end
+return
 
 --2.	Write a procedure BooksbyTitle that will accept part of a title as a parameter and find all books that have that part in the title.  List the ISBN, title, suggested selling price and number in stock for these books. (2 marks)
+go
+create procedure BooksbyTitle(@title varchar(30))
+as
+	if @title is null
+	begin
+		raiserror('Enter title pls', 16,1)
+	end
+
+	else
+		begin
+		select isbn, title, SuggestedPrice, NumberInStock from title
+		where title like '%' + @title + '%'
+		end
+
+return
 
 --3.	Write a procedure AddCategory that will add a new category. The procedure will accept a description for the category as a parameter. If the description is already present in the table raise an appropriate error message and do not add it. Otherwise add this record to the Category table and if there are no errors select the new CategoryCode. (4 marks)
+go
+create procedure AddCategory(@description varchar(50))
+as
+	if @description is null
+	begin
+		raiserror('Enter description pls', 16,1)
+	end
+
+	else
+		--begin
+		--if @description in the cate
+			--begin
+			--add it here
+			--end
+		--else
+			--begin
+			--raiserror('Description is already here!',16,1)
+			--end
+		--end
+
+return
 
 --4.	Write a procedure UpdateSuggestedPrice that accepts an ISBN number and a new suggested price as parameters.  If the ISBN does not exist, raise an error message and do not perform the update. Otherwise, update the suggested price to the new price. (4 marks)
 
