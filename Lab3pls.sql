@@ -67,7 +67,11 @@ as
 return
 
 --4.	Write a procedure UpdateSuggestedPrice that accepts an ISBN number and a new suggested price as parameters.  If the ISBN does not exist, raise an error message and do not perform the update. Otherwise, update the suggested price to the new price. (4 marks)
-go create procedure UpdateSuggestedPrice
+go
+create procedure UpdateSuggestedPrice
+as
+
+return
 
 --5.	Write a procedure UpdateTitle that accepts all the Title table fields as parameters and will update the title with those values. Raise error messages and do not perform the update for the following conditions: 
 --		The ISBN does not exist
@@ -76,16 +80,35 @@ go create procedure UpdateSuggestedPrice
 go
 create procedure UpdateTitle(@isbn char(10), @title varchar(40), @suggestedprice money,@numberinstock int, @publishercode int, @categorycode int)
 as
-	if @isbn --aint exist
+	if @isbn is null
 		begin
-		raiserror('THE ISBN does not exist',16,1)
+		raiserror('The isbn cannot be empty',16,1)
 		end
 	else
-		if @categorycode or @publishercode --wrong
-			begin
-			raiserror('Them codes are not valid',16,1)
-			end
-		
+		begin
+			if exists(select isbn from title where isbn = @isbn)
+				begin
+					if exists(select CategoryCode, publishercode from title where CategoryCode = @CategoryCode and publishercode = @publishercode)
+						begin
+						raiserror('FOund you again!',16,1)
+						--update command goes here pls and thanks man i apprecicate you lots :)
+						end
+					else
+						begin
+						raiserror('couldnt find it man!',16,1)
+						end
+				end
+			else
+				begin
+				raiserror('didnt find you!',16,1)
+				end
+		end
+
+
+		--if @categorycode or @publishercode
+		--	begin
+		--	raiserror('Them codes are not valid',16,1)
+		--	end
 return
 --6.	Write a procedure CustomerBooks that displays the amount spent on books purchased by each customer, who purchased books, during a certain month. The month is passed into the procedure as integer month and integer year parameters.  Error messages are required for the following: 
 --		The month number is invalid (not 1 – 12) 
@@ -98,7 +121,17 @@ as
 		begin
 		raiserror('Not a valid number bwtween 1-12',16,1)
 		end
-	else if @year is getdate()
+	else if @year > getdate()
+		begin
+		raiserror('Cannot enter a future date thanks',16,1)
+		end
+	else
+		begin
+		select sale.customerNumber, firstname + ' ' + lastname'FullName', sum(subtotal)'Subtotal' from customer
+		inner join sale on sale.customerNumber = customer.customerNumber
+		where saledate > getdate()
+		group by sale.customerNumber, firstname, lastname 
+		end
 return
 
 
