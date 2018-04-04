@@ -67,19 +67,42 @@ as
 return
 
 --4.	Write a procedure UpdateSuggestedPrice that accepts an ISBN number and a new suggested price as parameters.  If the ISBN does not exist, raise an error message and do not perform the update. Otherwise, update the suggested price to the new price. (4 marks)
+go create procedure UpdateSuggestedPrice
 
 --5.	Write a procedure UpdateTitle that accepts all the Title table fields as parameters and will update the title with those values. Raise error messages and do not perform the update for the following conditions: 
 --		The ISBN does not exist
 --		The Category and/or Publisher Codes are not valid.
 --		Otherwise, perform the update. (4 marks)
-
+go
+create procedure UpdateTitle(@isbn char(10), @title varchar(40), @suggestedprice money,@numberinstock int, @publishercode int, @categorycode int)
+as
+	if @isbn --aint exist
+		begin
+		raiserror('THE ISBN does not exist',16,1)
+		end
+	else
+		if @categorycode or @publishercode --wrong
+			begin
+			raiserror('Them codes are not valid',16,1)
+			end
+		
+return
 --6.	Write a procedure CustomerBooks that displays the amount spent on books purchased by each customer, who purchased books, during a certain month. The month is passed into the procedure as integer month and integer year parameters.  Error messages are required for the following: 
 --		The month number is invalid (not 1 – 12) 
 --		The month and year are not before today’s date (Cannot enter a future month).
-
 --		If there are no errors, select the customer number, last name and the amount spent that month. DO NOT include GST in the amount spent.  (4 marks)
+go
+create procedure CustomerBooks(@month int, @year int)
+as
+	if @month not between 1 and 12
+		begin
+		raiserror('Not a valid number bwtween 1-12',16,1)
+		end
+	else if @year is getdate()
+return
 
---7.	7.	Write a procedure AddSaleDetail that will add a sale detail for a book purchased and will update the sale with that book information. The following data is passed to the procedure as parameters: sale number, ISBN and quantity. Specific error messages are required for the following:
+
+--7.	Write a procedure AddSaleDetail that will add a sale detail for a book purchased and will update the sale with that book information. The following data is passed to the procedure as parameters: sale number, ISBN and quantity. Specific error messages are required for the following:
 --		The ISBN or sale numbers are not valid 
 --		The ISBN is already on that sale.   
 
