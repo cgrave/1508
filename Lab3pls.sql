@@ -45,7 +45,7 @@ return
 
 --3.	Write a procedure AddCategory that will add a new category. The procedure will accept a description for the category as a parameter. If the description is already present in the table raise an appropriate error message and do not add it. Otherwise add this record to the Category table and if there are no errors select the new CategoryCode. (4 marks)
 go
-create procedure AddCategory(@description varchar(50))
+create procedure AddCategory(@description varchar(50), @categorycode int)
 as
 	if @description is null
 	begin
@@ -53,49 +53,81 @@ as
 	end
 
 	else
-		--begin
-		--if @description in the cate
-			--begin
-			--add it here
-			--end
-		--else
-			--begin
-			--raiserror('Description is already here!',16,1)
-			--end
-		--end
+		begin
+		if exists(select description from category where description = @description)
+			begin
+			raiserror('Description is already here!',16,1)
+			end
+		else
+			Begin
+			insert into category (categorycode, description)
+			values (@categorycode, @description)
+
+			If @@ERROR <>0
+				Begin
+				RaisError ('insert failed',16,1)
+				End
+			End
+		end
 
 return
 
 --4.	Write a procedure UpdateSuggestedPrice that accepts an ISBN number and a new suggested price as parameters.  If the ISBN does not exist, raise an error message and do not perform the update. Otherwise, update the suggested price to the new price. (4 marks)
 go
-create procedure UpdateSuggestedPrice
+create procedure UpdateSuggestedPrice(@isbn char(10), @suggestedprice money)
 as
-
+	if @isbn is null
+		begin
+		raiserror('cannot be empty isbn',16,1)
+		end
+	else
+		Begin
+		if exists(select isbn from title where isbn = @isbn)
+			begin
+			update title
+			set SuggestedPrice = @suggestedprice
+			where isbn = @isbn
+			If @@ERROR <>0
+				Begin
+				RaisError ('update failed!',16,1)
+				End
+			End
+		else
+			begin
+			raiserror('Does not exist',16,1)
+			end
+		end
 return
 
 --5.	Write a procedure UpdateTitle that accepts all the Title table fields as parameters and will update the title with those values. Raise error messages and do not perform the update for the following conditions: 
 --		The ISBN does not exist
 --		The Category and/or Publisher Codes are not valid.
 --		Otherwise, perform the update. (4 marks)
+
 go
 create procedure UpdateTitle(@isbn char(10), @title varchar(40), @suggestedprice money,@numberinstock int, @publishercode int, @categorycode int)
 as
-	if @isbn is null
+	if @isbn is null and @title is null and @suggestedprice is null and @numberinstock is null and @publishercode is null and @categorycode is null
 		begin
-		raiserror('The isbn cannot be empty',16,1)
+		raiserror('Please enter in something',16,1)
 		end
 	else
 		begin
 			if exists(select isbn from title where isbn = @isbn)
 				begin
-					if exists(select CategoryCode, publishercode from title where CategoryCode = @CategoryCode and publishercode = @publishercode)
-						begin
-						raiserror('FOund you again!',16,1)
-						--update command goes here pls and thanks man i apprecicate you lots :)
-						end
+					if exists(select @categorycode from category where @categorycode = categorycode) and exists(select @publishercode from publisher where @publishercode = publishercode)
+						Begin
+						update title
+						set categorycode = @categorycode, publishercode = @publishercode, title = @title, SuggestedPrice = @suggestedprice, NumberInStock = @numberinstock
+						where isbn = @isbn
+						If @@ERROR <>0
+							Begin
+							RaisError ('update failed!',16,1)
+							End
+						End
 					else
 						begin
-						raiserror('couldnt find it man!',16,1)
+						raiserror('Not valid category/publisher codes',16,1)
 						end
 				end
 			else
@@ -103,13 +135,8 @@ as
 				raiserror('didnt find you!',16,1)
 				end
 		end
-
-
-		--if @categorycode or @publishercode
-		--	begin
-		--	raiserror('Them codes are not valid',16,1)
-		--	end
 return
+
 --6.	Write a procedure CustomerBooks that displays the amount spent on books purchased by each customer, who purchased books, during a certain month. The month is passed into the procedure as integer month and integer year parameters.  Error messages are required for the following: 
 --		The month number is invalid (not 1 – 12) 
 --		The month and year are not before today’s date (Cannot enter a future month).
@@ -143,6 +170,31 @@ return
 --			Insert the Sale Detail record into SaleDetail table. The selling price will be the Suggested Price for that ISBN. 
 --			Update the book in the Title table to reduce the number in stock by the quantity 
 --			Update the Sale record subtotal, total and GST fields in Sale table to include the sale amount of the book purchased.  (8 marks)
+go
+create procedure AddSaleDetail(@salenumber int, @isbn char(10), @quantity int)
+as
+	if @isbn is null and @salenumber is null and @quantity is null
+		begin
+		raiserror('Please enter something',16,1)
+		end
+	else
+		begin
+			if exists(select isbn from saledetail where isbn = @isbn)
+				begin
+				raiserror('found u',16,1)
+				end
+			if exists(select salenumber from saledetail where salenumber = @salenumber)
+				begin
+				raiserror('found u',16,1)
+				end
+			else
+				begin
+				raiserror('else me pls',16,1)
+				end
+		end
+
+return
+
 
 --8.	Create table ArchiveEmployee. This table will be a duplicate table of the employee table including the following: 
 --	a) use the same fields as the Employee table
