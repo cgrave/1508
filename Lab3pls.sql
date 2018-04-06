@@ -1,6 +1,5 @@
 -- Lab 3 Crystal Grave
---1.	Write a procedure BooksbyAuthorName that will find and display all books by a certain author. The procedure accepts author last name and first name as parameters. 
---Display the ISBN, title, publisher name and suggested price of all books by that author.  List in ascending title sequence. (3 marks)
+--1.
 create procedure BooksbyAuthorName  (@authorFirstname varchar(30), @authorLastname varchar(30))
 as
 if @authorFirstname is null
@@ -14,19 +13,16 @@ if @authorLastname is null
 else
 	begin
 		select title.isbn, title, Publisher.name, SuggestedPrice from title
-		
-		--inner join authortitle on author.authorcode = authortitle.authorcode
 		inner join authortitle on title.isbn = authortitle.isbn
 		inner join author on author.authorcode = authortitle.authorcode
 		inner join publisher on publisher.PublisherCode = title.PublisherCode
 		where @authorFirstname = firstname and @authorLastname = lastname
-		--where author.FirstName = 'Sam' and lastname = 'smith'
 		order by title asc
-		--select * from author
 	end
 return
 
---2.	Write a procedure BooksbyTitle that will accept part of a title as a parameter and find all books that have that part in the title.  List the ISBN, title, suggested selling price and number in stock for these books. (2 marks)
+
+--2.
 go
 create procedure BooksbyTitle(@title varchar(30))
 as
@@ -40,12 +36,12 @@ as
 		select isbn, title, SuggestedPrice, NumberInStock from title
 		where title like '%' + @title + '%'
 		end
-
 return
 
---3.	Write a procedure AddCategory that will add a new category. The procedure will accept a description for the category as a parameter. If the description is already present in the table raise an appropriate error message and do not add it. Otherwise add this record to the Category table and if there are no errors select the new CategoryCode. (4 marks)
+
+--3.
 go
-create procedure AddCategory(@description varchar(50), @categorycode int)
+create procedure AddCategory(@description varchar(50))
 as
 	if @description is null
 	begin
@@ -60,6 +56,7 @@ as
 			end
 		else
 			Begin
+			declare @categorycode int
 			insert into category (categorycode, description)
 			values (@categorycode, @description)
 
@@ -69,16 +66,20 @@ as
 				End
 			End
 		end
-
 return
 
---4.	Write a procedure UpdateSuggestedPrice that accepts an ISBN number and a new suggested price as parameters.  If the ISBN does not exist, raise an error message and do not perform the update. Otherwise, update the suggested price to the new price. (4 marks)
+
+--4.
 go
 create procedure UpdateSuggestedPrice(@isbn char(10), @suggestedprice money)
 as
 	if @isbn is null
 		begin
-		raiserror('cannot be empty isbn',16,1)
+		raiserror('please enter isbn',16,1)
+		end
+	if @suggestedprice is null
+		begin
+		raiserror('please enter a suggested price',16,1)
 		end
 	else
 		Begin
@@ -99,11 +100,8 @@ as
 		end
 return
 
---5.	Write a procedure UpdateTitle that accepts all the Title table fields as parameters and will update the title with those values. Raise error messages and do not perform the update for the following conditions: 
---		The ISBN does not exist
---		The Category and/or Publisher Codes are not valid.
---		Otherwise, perform the update. (4 marks)
 
+--5.
 go
 create procedure UpdateTitle(@isbn char(10), @title varchar(40), @suggestedprice money,@numberinstock int, @publishercode int, @categorycode int)
 as
@@ -132,15 +130,13 @@ as
 				end
 			else
 				begin
-				raiserror('didnt find you!',16,1)
+				raiserror('didnt find isbn!',16,1)
 				end
 		end
 return
 
---6.	Write a procedure CustomerBooks that displays the amount spent on books purchased by each customer, who purchased books, during a certain month. The month is passed into the procedure as integer month and integer year parameters.  Error messages are required for the following: 
---		The month number is invalid (not 1 – 12) 
+--6.	
 --		The month and year are not before today’s date (Cannot enter a future month).
---		If there are no errors, select the customer number, last name and the amount spent that month. DO NOT include GST in the amount spent.  (4 marks)
 go
 create procedure CustomerBooks(@month int, @year int)
 as
@@ -148,7 +144,7 @@ as
 		begin
 		raiserror('Not a valid number bwtween 1-12',16,1)
 		end
-	else if @year > getdate()
+	if @year > year(getdate()) and @month > month(getdate())
 		begin
 		raiserror('Cannot enter a future date thanks',16,1)
 		end
@@ -156,19 +152,14 @@ as
 		begin
 		select sale.customerNumber, firstname + ' ' + lastname'FullName', sum(subtotal)'Subtotal' from customer
 		inner join sale on sale.customerNumber = customer.customerNumber
-		where saledate > getdate()
-		group by sale.customerNumber, firstname, lastname 
+		where year(saledate) = @year and month(saledate) = @month
+		group by sale.customerNumber, firstname, lastname, saledate
 		end
 return
 
 
---7.	Write a procedure AddSaleDetail that will add a sale detail for a book purchased and will update the sale with that book information. The following data is passed to the procedure as parameters: sale number, ISBN and quantity. Specific error messages are required for the following:
---		The ISBN or sale numbers are not valid 
---		The ISBN is already on that sale.   
 
---		If there are no errors: 
---			Insert the Sale Detail record into SaleDetail table. The selling price will be the Suggested Price for that ISBN. 
---			Update the book in the Title table to reduce the number in stock by the quantity 
+--7.	
 --			Update the Sale record subtotal, total and GST fields in Sale table to include the sale amount of the book purchased.  (8 marks)
 go
 create procedure AddSaleDetail(@salenumber int, @isbn char(10), @quantity int)
@@ -177,28 +168,80 @@ as
 		begin
 		raiserror('Please enter something',16,1)
 		end
+	if not exists (select isbn from title where @isbn = isbn)
+		begin
+		raiserror('Could not find isbn',16,1)
+		end
+	if not exists (select salenumber from saledetail where salenumber = salenumber)
+		begin
+		raiserror('Could not find salenumber',16,1)
+		end
 	else
 		begin
-			if exists(select isbn from saledetail where isbn = @isbn)
-				begin
-				raiserror('found u',16,1)
-				end
-			if exists(select salenumber from saledetail where salenumber = @salenumber)
-				begin
-				raiserror('found u',16,1)
-				end
-			else
-				begin
-				raiserror('else me pls',16,1)
-				end
+		Declare @sellingPrice money
+		Declare @amount money
+		Declare @numinstock int
+		select @sellingPrice = suggestedprice from title
+		insert into saledetail (sellingprice)
+		values (@sellingPrice)
+
+		select title from title where isbn = @isbn
+		select @numinstock = numberinstock from title where isbn = @isbn
+		update title (NumberInStock)
+		set numberinstock = numberinstock - 1
+
+
+			--	end
 		end
 
 return
 
 
---8.	Create table ArchiveEmployee. This table will be a duplicate table of the employee table including the following: 
---	a) use the same fields as the Employee table
---	b) do not use the identity parameter on the EmployeeNumber of the ArchiveEmployee table 
---	c) do not put in foreign keys, check or default constraints.  (1 marks)
+--8.
+drop table ArchiveEmployee
+
+Create table ArchiveEmployee
+(
+EmployeeNumber int identity (300,1) not null,
+SIN char (9) not null,
+LastName varchar(30) not null,
+FirstName varchar(30) not null,
+Address varchar(40) not null,
+City varchar(20) null,
+Province char(2) null ,
+PostalCode char(6) null ,
+HomePhone char(10) null,
+workPhone char(10) null,
+Email varchar(30) null
+)
+
+
 
 --9.	1.	Write a procedure ArchiveEmployeeTransactions that will move employee information to the ArchiveEmployee table for storage.  The employee will only be archived if they do not have any sales. An employee number will be passed to this procedure as a parameter. Error messages are required if the employee number does not exist or of the employee cannot be archived because they have sales.  (5 marks)
+go
+create procedure ArchiveEmployeeTransactions(@employeeNumber int)
+as
+if @employeeNumber is null
+	Begin
+	Raiserror ('You must provide an employee number',16,1)
+	End
+if not exists(select employeeNumber from employee where employeeNumber = @employeeNumber)
+begin
+raiserror('does not exist here',16,1)
+end 
+
+else
+	Begin
+	if exists(select employeeNumber from sale where employeeNumber = @employeeNumber)
+		Begin Transaction
+		insert into ArchiveEmployee (EmployeeNumber,SIN, LastName, FirstName, Address, City, Province, PostalCode, HomePhone, workPhone, Email)
+		Select EmployeeNumber,SIN, LastName, FirstName, Address, City, Province, PostalCode, HomePhone, workPhone, Email
+		 from employee
+		 where @employeeNumber = employeeNumber
+		if @@ERROR<>0 
+			Begin
+			Raiserror ('Archive failed',16,1)
+			Rollback Transaction
+			End
+	end
+Return
