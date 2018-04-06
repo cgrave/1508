@@ -189,9 +189,7 @@ as
 		select @numinstock = numberinstock from title where isbn = @isbn
 		update title (NumberInStock)
 		set numberinstock = numberinstock - 1
-
-
-			--	end
+		--something
 		end
 
 return
@@ -217,7 +215,7 @@ Email varchar(30) null
 
 
 
---9.	1.	Write a procedure ArchiveEmployeeTransactions that will move employee information to the ArchiveEmployee table for storage.  The employee will only be archived if they do not have any sales. An employee number will be passed to this procedure as a parameter. Error messages are required if the employee number does not exist or of the employee cannot be archived because they have sales.  (5 marks)
+--9.
 go
 create procedure ArchiveEmployeeTransactions(@employeeNumber int)
 as
@@ -232,16 +230,21 @@ end
 
 else
 	Begin
-	if exists(select employeeNumber from sale where employeeNumber = @employeeNumber)
+	if not exists(select employeeNumber from sale where employeeNumber = @employeeNumber)
 		Begin Transaction
 		insert into ArchiveEmployee (EmployeeNumber,SIN, LastName, FirstName, Address, City, Province, PostalCode, HomePhone, workPhone, Email)
 		Select EmployeeNumber,SIN, LastName, FirstName, Address, City, Province, PostalCode, HomePhone, workPhone, Email
-		 from employee
-		 where @employeeNumber = employeeNumber
+		from employee
+		where @employeeNumber = employeeNumber
 		if @@ERROR<>0 
 			Begin
 			Raiserror ('Archive failed',16,1)
-			Rollback Transaction
+		Rollback Transaction
 			End
+	else
+	begin
+	raiserror('cannot because they have sales',16,1)
 	end
+		end
+
 Return
